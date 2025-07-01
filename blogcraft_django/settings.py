@@ -9,8 +9,14 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# 환경변수 값 읽어오기
+load_dotenv()
+FONT_AWESOME_KIT = os.getenv("FONTAWESOME_KIT_CODE")
+
 # test용 코드
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -64,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'blogcraft_django.context_processors.font_awesome_kit',
             ],
         },
     },
