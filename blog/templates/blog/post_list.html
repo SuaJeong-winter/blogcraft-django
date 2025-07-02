@@ -7,7 +7,6 @@
 
      <link rel="stylesheet" href="{% static 'blog/bootstrap/bootstrap.min.css'%}" media="screen">
 
-    <!--   kit code부분은 환경 변수로 처리할 것    -->
     <script src="https://kit.fontawesome.com/{{ font_awesome_kit }}.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -96,7 +95,7 @@
             <!--   Blog Post    -->
             <div class="card mb-4">
                 <a href="#!">
-                    <img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..."/>
+                    <img class="card-img-top" src="{{p.head_image.url}}" alt="..."/>
                 </a>
                 <div class="card-body">
                     <div class="small text-muted">{{p.created_at}}</div>

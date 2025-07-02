@@ -209,6 +209,8 @@ __marimo__/
 #Pycharm
 .idea/
 migrations/
+media/
 
 # env file
 .env
+

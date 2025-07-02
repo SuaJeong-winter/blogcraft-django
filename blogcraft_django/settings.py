@@ -126,6 +126,10 @@ USE_TZ = False
 
 STATIC_URL = 'static/'
 
+# Image Upload
+MEDIA_URL = '/media/'
+MEDIA_ROOT= os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
