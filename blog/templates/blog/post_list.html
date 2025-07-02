@@ -26,6 +26,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./blog_list.html">Blog</a>
                 </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="./about_me.html">About me</a>
                 </li>
@@ -91,30 +92,21 @@
     <div class="row">
         <div class="col-md-8 col-lg-9">
             <h1>Blog</h1>
+            {% for p in post_list %}
             <!--   Blog Post    -->
             <div class="card mb-4">
-                <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg"
-                                  alt="..."/></a>
+                <a href="#!">
+                    <img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..."/>
+                </a>
                 <div class="card-body">
-                    <div class="small text-muted">January 1, 2023</div>
-                    <h2 class="card-title h4">Post Title</h2>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid
-                        atque, nulla.</p>
-                    <a class="btn btn-primary" href="#!">Read more →</a>
+                    <div class="small text-muted">{{p.created_at}}</div>
+                    <h2 class="card-title h4">{{p.title}}</h2>
+                    <p class="card-text">{{p.content}}</p>
+                    <a class="btn btn-primary" href="{{p.get_absolute_url}}">Read more →</a>
                 </div>
             </div>
-            <!--   Blog Post    -->
-            <div class="card mb-4">
-                <a href="#!"><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg"
-                                  alt="..."/></a>
-                <div class="card-body">
-                    <div class="small text-muted">January 1, 2023</div>
-                    <h2 class="card-title h4">Post Title</h2>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid
-                        atque, nulla.</p>
-                    <a class="btn btn-primary" href="#!">Read more →</a>
-                </div>
-            </div>
+            {% endfor %}
+
             <!--   Pagination    -->
             <hr class="my-0"/>
             <ul class="pagination justify-content-center my-4">
