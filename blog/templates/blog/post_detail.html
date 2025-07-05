@@ -18,12 +18,16 @@
                 <a href="#">{{post.author|upper}}</a>
             </p>
             <hr/>
-            <!-- Post categories-->
-            <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
-            <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
+            <section class="d-flex">
+                <!-- Post categories-->
+                {% if post.category %}
+                <span class="badge badge-secondary float-right">{{post.category}}</span>
+                {% else %}
+                <span class="badge badge-secondary float-right">미분류</span>
+                {% endif %}
+            </section>
         </header>
         <!-- Preview image figure-->
-
         <figure class="mb-4">
             {% if post.head_image %}
             <img class="img-fluid rounded" src="{{post.head_image.url}}" alt="{{post.title}} head image"/>
@@ -65,7 +69,8 @@
             <div class="card-body">
                 <!-- Comment form-->
                 <form class="mb-4"><textarea class="form-control" rows="3"
-                                             placeholder="Join the discussion and leave a comment!"></textarea></form>
+                                             placeholder="Join the discussion and leave a comment!"></textarea>
+                </form>
                 <!-- Comment with nested comments-->
                 <div class="d-flex mb-4">
                     <!-- Parent comment-->
@@ -75,7 +80,8 @@
                     <div class="ms-3">
                         <div class="fw-bold">Commenter Name</div>
                         If you're going to lead a space frontier, it has to be government; it'll never be private
-                        enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified
+                        enterprise. Because the space frontier is dangerous, and it's expensive, and it has
+                        unquantified
                         risks.
                         <!-- Child comment 1-->
                         <div class="d-flex mt-4">
@@ -109,7 +115,8 @@
                     </div>
                     <div class="ms-3">
                         <div class="fw-bold">Commenter Name</div>
-                        When I look at the universe and all the ways the universe wants to kill us, I find it hard to
+                        When I look at the universe and all the ways the universe wants to kill us, I find it hard
+                        to
                         reconcile that with statements of beneficence.
                     </div>
                 </div>
