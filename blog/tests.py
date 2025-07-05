@@ -31,6 +31,23 @@ class TestView(TestCase):
             author=self.user_ain
         )
 
+    def test_category_page(self):
+        # 페이지가 잘 열리는지 확인
+        response = self.client.get(self.category_programming.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        # 페이지에 카테고리 이름이 있는지 확인
+        soup = BeautifulSoup(response.content, 'html.parser')
+        self.navbar_test(soup)
+        self.category_card_test(soup)
+        # 카테고리 뱃지가 페이지 제목에 잘 나타나는지 
+        self.assertIn(self.category_programming.name, soup.h1.text)
+        # 카테고리의 이름과 그 카테고리에 해당하는 포스트만 나타나고 있는지 확인
+        main_area = soup.find('div', id='main-area')
+        self.assertIn(self.category_programming.name, main_area.text)
+        self.assertIn(self.post_001.title, main_area.text)
+        self.assertNotIn(self.post_002.title, main_area.text)
+        self.assertNotIn(self.post_003.title, main_area.text)
+
     def category_card_test(self, soup):  # id가 category-card인 div 요소를 찾고 모든 카테고리가 제대로 출력되어 있는지 확인
         categories_card = soup.find('div', id='categories-card')
         self.assertIn('Categories', categories_card.text)
