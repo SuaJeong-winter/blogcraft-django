@@ -6,6 +6,8 @@
     {% if category %}
     <span class="badge badge-secondary">{{category}}</span>
     {% endif %}
+    {% if tag %}
+    <span class="badge badge-light"><i class="fas fa-tags"></i>{{tag}} ({{tag.post_set.count}})</span>{% endif %}
 </h1>
 {% if post_list.exists %}
 {% for p in post_list %}
@@ -35,14 +37,13 @@
         {% if p.tags.exists %}
         <i class="fas fa-tags"></i>
         {% for tag in p.tags.iterator %}
-        <a href="{{tag.get_absoulte_url}}"><span class="badge badge-pill badge-dark">{{tag}}</span></a>
+        <a href="{{tag.get_absolute_url }}"><span class="badge badge-pill badge-dark">{{tag}}</span></a>
         {% endfor %}
         <br/>
         <br/>
         {% endif %}
 
-
-        <a class="btn btn-primary" href="{{p.get_absolute_url}} ">Read more →</a>
+        <a class="btn btn-primary" href="{{p.get_absolute_url}} ">Read more &rarr;</a>
     </div>
 </div>
 {% endfor %}

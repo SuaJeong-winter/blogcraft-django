@@ -45,7 +45,7 @@
             <!-- Tag 관련 -->
             {% if post.tags.exists %}
             <i class="fas fa-tags"></i>
-            {% for tag in post.tags.iterator %}
+            {% for tag in post.tags.all %}
             <a href="{{tag.get_absoulte_url}}"><span class="badge badge-pill badge-dark">{{tag}}</span></a>
             {% endfor %}
             <br/>
@@ -72,7 +72,7 @@
         </section>
     </article>
 </div>
-
+<hr/>
 <!-- Comments section-->
 <div id="comment-area">
     <section class="mb-5">

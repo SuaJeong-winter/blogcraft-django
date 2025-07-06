@@ -13,6 +13,7 @@ class TestView(TestCase):
         self.category_programming = Category.objects.create(name='programming', slug='programming')
         self.category_react = Category.objects.create(name='react', slug='react')
 
+        # Tag 모델에 대한 테스트 데이터(파이썬 공부, python, hello) 생성
         self.tag_python_kor = Tag.objects.create(name='파이썬 공부', slug='파이썬-공부')
         self.tag_python = Tag.objects.create(name='python', slug='python')
         self.tag_hello = Tag.objects.create(name='hello', slug='hello')
@@ -39,6 +40,23 @@ class TestView(TestCase):
         )
         self.post_003.tags.add(self.tag_python_kor)
         self.post_003.tags.add(self.tag_python)
+
+    def test_tag_page(self):
+        response = self.client.get(self.tag_hello.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.navbar_test(soup)
+        self.category_card_test(soup)
+
+        self.assertIn(self.tag_hello.name, soup.h1.text)
+
+        main_area = soup.find('div', id='main-area')
+        self.assertIn(self.tag_hello.name, main_area.text)
+
+        self.assertIn(self.post_001.title, main_area.text)
+        self.assertNotIn(self.post_002.title, main_area.text)
+        self.assertNotIn(self.post_003.title, main_area.text)
 
     def test_category_page(self):
         # 페이지가 잘 열리는지 확인
@@ -134,7 +152,7 @@ class TestView(TestCase):
         main_area = soup.find('div', id='main-area')
         self.assertIn('아직 게시물이 없습니다.', main_area.text)
 
-    def test_blog_detail(self):
+    def test_post_detail(self):
         # 1.2 그 포스트의 url은 '/blog/1/'이다.
         self.assertEqual(self.post_001.get_absolute_url(), '/blog/1/')
 
