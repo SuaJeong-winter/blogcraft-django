@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Category, Tag
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -42,13 +42,17 @@ def tag_page(request, slug):
     )
 
 
-class PostCreate(LoginRequiredMixin, CreateView):
+class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Post  # Post 모델을 사용한다.
     fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']  # Post 모델에 사용할 필드명들은 다음과 같다.
 
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff  # superuser 또는 staff 권한이 있는 사용자만 게시물 작성할 수 있도록
+
     def form_valid(self, form):
         current_user = self.request.user  # 웹 사이트의 방문자
-        if current_user.is_authenticated:  # is_authenticated는 사용자가 로그인했는지 확인하는 속성이다.
+        if current_user.is_authenticated and (
+                current_user.is_staff or current_user.is_superuser):  # is_authenticated는 사용자가 로그인했는지 확인하는 속성이다.
             form.instance.author = current_user
             return super(PostCreate, self).form_valid(form)
         else:

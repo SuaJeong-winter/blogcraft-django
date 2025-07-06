@@ -10,6 +10,9 @@ class TestView(TestCase):
         self.user_milan = User.objects.create_user(username='milan', password='1234Arabbit')
         self.user_ain = User.objects.create_user(username='ain', password='somepassword')
 
+        self.user_milan.is_staff = True  # milan에게 staff 권한을 부여
+        self.user_milan.save()
+
         self.category_programming = Category.objects.create(name='programming', slug='programming')
         self.category_react = Category.objects.create(name='react', slug='react')
 
@@ -183,6 +186,13 @@ class TestView(TestCase):
     def test_create_post(self):
         response = self.client.get('/blog/create_post/')
         self.assertNotEqual(response.status_code, 200)
+
+        # staff가 아닌 ain 유저가 로그인을 한다
+        self.client.login(username='ain', password='somepassword')
+        response = self.client.get('/blog/create_post/')
+        self.assertNotEqual(response.status_code, 200)
+
+        # staff 권한이 있는 milan 유저로 로그인한다
         self.client.login(username='milan', password='1234Arabbit')  # milan 유저로 로그인
 
         response = self.client.get('/blog/create_post/')
