@@ -1,6 +1,7 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post, Category, Tag
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 
 
@@ -39,6 +40,19 @@ def tag_page(request, slug):
             'no_category_post_count': Post.objects.filter(category=None).count(),
         }
     )
+
+
+class PostCreate(LoginRequiredMixin, CreateView):
+    model = Post  # Post 모델을 사용한다.
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']  # Post 모델에 사용할 필드명들은 다음과 같다.
+
+    def form_valid(self, form):
+        current_user = self.request.user  # 웹 사이트의 방문자
+        if current_user.is_authenticated:  # is_authenticated는 사용자가 로그인했는지 확인하는 속성이다.
+            form.instance.author = current_user
+            return super(PostCreate, self).form_valid(form)
+        else:
+            return redirect('/blog/')
 
 
 class PostList(ListView):
