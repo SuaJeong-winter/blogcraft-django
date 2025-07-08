@@ -4,6 +4,7 @@ from .models import Post, Category, Tag
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
+from django.utils.text import slugify
 
 
 # category_page함수는 FBV로 만들었다.
@@ -47,7 +48,7 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post  # Post 모델을 사용한다.
     fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category',
               'tags']  # Post 모델에 사용할 필드명들은 다음과 같다.
-    
+
     template_name = 'blog/post_update_form.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -69,7 +70,24 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         if current_user.is_authenticated and (
                 current_user.is_staff or current_user.is_superuser):  # is_authenticated는 사용자가 로그인했는지 확인하는 속성이다.
             form.instance.author = current_user
-            return super(PostCreate, self).form_valid(form)
+            response = super(PostCreate, self).form_valid(form)
+
+            tags_str = self.request.POST.get('tags_str')  # POST 방식으로 전달된 정보 중 name='tags_str'인 input값을 가져와라 
+            if tags_str:
+                tags_str = tags_str.strip()
+
+                tags_str = tags_str.replace(',', ';')
+                tags_list = tags_str.split(';')
+
+                for t in tags_list:
+                    t = t.strip()
+                    tag, is_tag_created = Tag.objects.get_or_create(name=t)
+                    if is_tag_created:
+                        tag.slug = slugify(t, allow_unicode=True)
+                        tag.save()
+                    self.object.tags.add(tag)  # self.object는 이번에 새로 만들어지는 post를 의미함
+
+                return response
         else:
             return redirect('/blog/')
 

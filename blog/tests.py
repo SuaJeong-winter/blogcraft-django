@@ -203,17 +203,26 @@ class TestView(TestCase):
         main_area = soup.find('div', id='main-area')
         self.assertIn('Create New Post', main_area.text)
 
+        tag_str_input = main_area.find('input', id='id_tags_str')
+        self.assertTrue(tag_str_input)
+
         self.client.post(
             '/blog/create_post/',
             {
                 'title': 'Post Form 만들기',
                 'content': 'Post form 페이지를 만들어봅니다.',
+                'tags_str': 'new tag; 한글 태그, python'
             }
         )
         self.assertEqual(Post.objects.count(), 4)
         last_post = Post.objects.last()  # Post 레코드 중 맨 마지막 레코드를 가져와 last_post에 저장합니다.
         self.assertEqual(last_post.title, "Post Form 만들기")
         self.assertEqual(last_post.author.username, 'milan')
+
+        self.assertEqual(last_post.tags.count(), 3)
+        self.assertTrue(Tag.objects.get(name='new tag'))
+        self.assertTrue(Tag.objects.get(name='한글 태그'))
+        self.assertEqual(Tag.objects.count(), 5)
 
     def test_update_post(self):
         update_post_url = f'/blog/update_post/{self.post_003.pk}/'  # 수정할 포스트는 3번째 포스트
