@@ -61,3 +61,17 @@ class Post(models.Model):
 
     def get_content_markdown(self):
         return markdown(self.content)
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)  # 여러 댓글이 한 포스트의 댓글이 되므로 post 필드에는 외래키를 사용
+    author = models.ForeignKey(User, on_delete=models.CASCADE)  # 작성자를 저장할 author 필드
+    content = models.TextField()  # 댓글 내용을 담을 content필드
+    created_at = models.DateTimeField(auto_now_add=True)  # 댓글 작성 일시
+    modified_at = models.DateTimeField(auto_now=True)  # 댓글 수정 일시
+
+    def __str__(self):
+        return f'{self.author}::{self.content}'
+
+    def get_absolute_url(self):
+        return f'{self.post.get_absolute_url()}#comment-{self.pk}'  # 이때 #은 html 요소의 id를 의미함

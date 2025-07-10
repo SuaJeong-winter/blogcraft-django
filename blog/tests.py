@@ -1,11 +1,28 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User  # User모델을 사용하기 위함
-from .models import Post, Category, Tag
+from .models import Post, Category, Tag, Comment
+# allauth.socialaccount.models.SocialApp.DoesNotExist 오류 해결용 코드
+from allauth.socialaccount.models import SocialApp
+from django.contrib.sites.models import Site
 
 
 class TestView(TestCase):
     def setUp(self):  # setUp() 함수는 TestCase의 초기 데이터베이스 상태를 정의할 수 있다.
+        # allauth.socialaccount.models.SocialApp.DoesNotExist 오류 해결용 코드
+        # Site과 SocialApp이 테스트 DB에 없으면 생성
+        site, _ = Site.objects.get_or_create(id=1, defaults={'domain': 'testserver', 'name': 'testserver'})
+
+        if not SocialApp.objects.filter(provider='google').exists():
+            google_app = SocialApp.objects.create(
+                provider='google',
+                name='Google',
+                client_id='fake-client-id',
+                secret='fake-secret'
+            )
+            google_app.sites.add(site)
+        # 여기까지
+
         self.client = Client()
         self.user_milan = User.objects.create_user(username='milan', password='1234Arabbit')
         self.user_ain = User.objects.create_user(username='ain', password='somepassword')
@@ -43,6 +60,12 @@ class TestView(TestCase):
         )
         self.post_003.tags.add(self.tag_python_kor)
         self.post_003.tags.add(self.tag_python)
+
+        self.comment_001 = Comment.objects.create(
+            post=self.post_001,
+            author=self.user_milan,
+            content='첫번째 댓글입니다.'
+        )
 
     def test_tag_page(self):
         response = self.client.get(self.tag_hello.get_absolute_url())
@@ -182,6 +205,12 @@ class TestView(TestCase):
         self.assertIn(self.tag_hello.name, post_area.text)
         self.assertNotIn(self.tag_python.name, post_area.text)
         self.assertNotIn(self.tag_python_kor.name, post_area.text)
+
+        # comment area
+        comments_area = soup.find('div', id='comment-area')
+        comment_001_area = comments_area.find('div', id='comment-1')
+        self.assertIn(self.comment_001.author.username, comment_001_area.text)
+        self.assertIn(self.comment_001.content, comment_001_area.text)
 
     def test_create_post(self):
         response = self.client.get('/blog/create_post/')
