@@ -1,6 +1,8 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import get_object_or_404
 from .models import Post, Category, Tag
+from .forms import CommentForm
 from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
@@ -42,6 +44,24 @@ def tag_page(request, slug):
             'no_category_post_count': Post.objects.filter(category=None).count(),
         }
     )
+
+
+def new_comment(request, pk):
+    if request.user.is_authenticated:  # 로그인이 되어있지 않다면 댓글 폼 안보임
+        post = get_object_or_404(Post, pk=pk)  # pk를 인자로 받고, 댓글을 달 post를 쿼리로 날려 가져옴. 없을 경우 404 에러
+
+    if request.method == 'POST':  # submit 버튼 누르면 POST 방식으로 데이터 전달
+        comment_form = CommentForm(request.POST)  # 정상적으로 폼 작성후 POST 했다면 해당 정보를 commentForm 형태로 가져옴
+        if comment_form.is_valid():  # 폼이 유효하게 작성되었을 경우 새로운 레코드를 만들어 DB에 저장
+            comment = comment_form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect(comment.get_absolute_url())  # 마지막으로 comment의 URL로 리다이렉트.
+        else:  # 브라우저에서 바로 127.0.0.1:8000/10/new_comment/로 작성해서 요청하는 경우 
+            return redirect(post.get_absolute_url())
+    else:  # 로그인 되어있지 않은 데다가 비정상접근을 시도한다면 접근 거부
+        raise PermissionDenied
 
 
 class PostUpdate(LoginRequiredMixin, UpdateView):
@@ -139,4 +159,5 @@ class PostDetail(DetailView):
         context = super(PostDetail, self).get_context_data()
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
+        context['comment_form'] = CommentForm
         return context
