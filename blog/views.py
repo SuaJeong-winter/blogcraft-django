@@ -75,6 +75,16 @@ class CommentUpdate(LoginRequiredMixin, UpdateView):
             raise PermissionDenied
 
 
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    post = comment.post
+    if request.user.is_authenticated and request.user == comment.author:
+        comment.delete()
+        return redirect(post.get_absolute_url())
+    else:
+        raise PermissionDenied
+
+
 class PostUpdate(LoginRequiredMixin, UpdateView):
     model = Post  # Post 모델을 사용한다.
     fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']  # 태그가 2개로 보여서 하나 지웠다
