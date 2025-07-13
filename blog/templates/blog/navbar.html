@@ -25,6 +25,14 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                        aria-expanded="false">
+                        {% if user.socialaccount_set.all.0.get_avatar_url %}
+                        <img class="rounded-circle" width="30px" src="{{user.socialaccount_set.all.0.get_avatar_url}}"
+                             alt=""/>
+                        {% else %}
+                        <img class="rounded-circle" width="50px"
+                             src="https://api.dicebear.com/9.x/lorelei/svg?seed={self.author.email}"/>
+                        {% endif %}
+                        &nbsp;
                         {{user.username}}
                     </a>
                     <div class="dropdown-menu">

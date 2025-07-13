@@ -115,8 +115,8 @@
                 {% for comment in post.comment_set.iterator%}
                 <div class="media mb-2" id="comment-{{comment.pk}}">
                     <img class="d-flex mr-3 rounded-circle"
-                         src="https://dummyimage.com/50x50/ced4da/6c757d.jpg"
-                         alt=""/>
+                         src="{{comment.get_avatar_url}}"
+                         alt="{{comment.author}}" width="60px"/>
                     <div class="media-body ms-3">
                         {% if user.is_authenticated and comment.author == user %}
                         <div class="float-right">
