@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.utils.text import slugify
+from django.db.models import Q
 
 
 # category_page함수는 FBV로 만들었다.
@@ -182,4 +183,22 @@ class PostDetail(DetailView):
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         context['comment_form'] = CommentForm
+        return context
+
+
+class PostSearch(PostList):
+    paginate_by = None  # 검색된 결과를 한 페이지에 다 보여주도록 함
+
+    def get_queryset(self):  # get_queryset()은 Post.objects.all()과 동일하게 model로 지정된 요소 전체를 가져오도록 함
+        q = self.kwargs['q']  # URL을 통해 넘어온 검색어를 받아 q라는 변수에 저장함
+        post_list = Post.objects.filter(
+            Q(title__contains=q) | Q(tags__name__contains=q)  # 여러 쿼리를 동시에 쓴다. title이나 tag에 q의 내용을 포함
+        ).distinct()  # distinct()중복되는 요소가 있다면 한번만 가져올 것
+        return post_list
+
+    def get_context_data(self, **kwargs):
+        context = super(PostSearch, self).get_context_data()
+        q = self.kwargs['q']
+        context['search_info'] = f'Search: {q} ({self.get_queryset().count()})'
+
         return context
