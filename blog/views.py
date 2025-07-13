@@ -164,7 +164,8 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class PostList(ListView):
     model = Post
-    ordering = '-pk'
+    ordering = '-pk'  # pk 값이 큰 순서대로. 측 최신의 글 순서대로 보여달라는 의미, -는 역순의 의미
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
         context = super(PostList, self).get_context_data()
