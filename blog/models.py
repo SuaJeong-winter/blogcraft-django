@@ -62,6 +62,12 @@ class Post(models.Model):
     def get_content_markdown(self):
         return markdown(self.content)
 
+    def get_avatar_url(self):
+        if self.author.socialaccount_set.exists():
+            return self.author.socialaccount_set.first().get_avatar_url()
+        else:
+            return f'https://api.dicebear.com/9.x/lorelei/svg?seed={self.author.email}'
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)  # 여러 댓글이 한 포스트의 댓글이 되므로 post 필드에는 외래키를 사용

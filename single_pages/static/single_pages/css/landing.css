@@ -1,0 +1,16 @@
+body {
+    /*background: url('single_pages/static/single_pages/images/lemon_bg.jpg') no-repeat center center fixed; 절대경로- 오류??*/
+    background: url('../images/lemon_bg.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+section {
+    margin-bottom: 150px;
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.6);
+}
