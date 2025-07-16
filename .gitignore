@@ -213,4 +213,4 @@ media/
 
 # env file
 .env
-
+.env.dev

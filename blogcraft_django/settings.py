@@ -29,8 +29,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# 원래는 True로 항상 1값이었지만 지금은 로컬에서 개발하는 경우에만 1로 하도록 함 .env.dev
 DEBUG = int(os.environ.get('DEBUG', 1))
 
+# host로 허용하는 주소
 if os.environ.get('DJANGO_ALLOWED_HOSTS'):
     ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
 else:
@@ -58,7 +60,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    
+
     'widget_tweaks',
     'slippers',
 
