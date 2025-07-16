@@ -52,11 +52,15 @@ INSTALLED_APPS = [
     'markdownx',
 
     # 로그인 관련
+    'allauth_ui',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    
+    'widget_tweaks',
+    'slippers',
 
     'blog',
     'single_pages',
